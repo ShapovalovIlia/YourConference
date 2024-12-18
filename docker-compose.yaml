@@ -1,0 +1,42 @@
+version: '3.8'
+
+volumes:
+  pgdata: {}
+  redis_data: {}
+
+services:
+  postgres:
+    container_name: "yo.postgres"
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - ${HOME}/pgdata:/var/lib/postgresql/yo
+
+  redis:
+    container_name: "yo.redis"
+    image: redis:alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # web_api:
+  #   profiles: [web_api]
+  #   container_name: ".web_api"
+  #   depends_on:
+  #     - postgres
+  #     - redis
+  #   restart: unless-stopped
+  #   build:
+  #     context: ./
+  #     dockerfile: ./Dockerfile
+  #     target: web_api
+  #   ports:
+  #     - "8000:8000"
