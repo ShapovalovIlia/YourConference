@@ -1,5 +1,5 @@
-__all__ = ["user_router", "admin_router"]
+__all__ = ["auth_router", "conference_router", "review_router"]
 
-
-from yo.presentation.routers.user import user_router
-from yo.presentation.routers.admin import admin_router
+from .auth import auth_router
+from .conference import conference_router
+from .review import review_router
