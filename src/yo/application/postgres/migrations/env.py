@@ -5,8 +5,8 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from yo.infrastructure.postgres.config import sync_postgres_config_from_env
-from yo.infrastructure.postgres.orm_models import *
+from yo.application.postgres.config import sync_postgres_config_from_env
+from yo.application.postgres.orm_models import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -13,7 +13,7 @@ from yo.presentation.routers import (
 async def main() -> None:
     app = FastAPI(title="science conferences")
 
-    config = Config(app=app, host="127.0.0.1", port=8080, reload=True)
+    config = Config(app=app, host="127.0.0.1", port=8080)
     server = Server(config=config)
     app.include_router(auth_router)
     app.include_router(conference_router)

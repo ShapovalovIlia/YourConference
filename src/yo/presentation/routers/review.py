@@ -1,9 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 
-from fastapi import APIRouter, HTTPException, Depends, Cookie, Query
+from fastapi import APIRouter, HTTPException, Depends, Cookie, Query, Form
 
-from yo.infrastructure import (
+from yo.application import (
     get_postgres_async_conn,
     AsyncSessionManager,
     ReviewsOrm,
@@ -15,12 +15,12 @@ from yo.presentation.validation_models import ReviewForm
 review_router = APIRouter(prefix="/reviews")
 
 
-@review_router.post("/create")  # type: ignore
+@review_router.post("")  # type: ignore
 async def create_review(
     session_manager: AsyncSessionManager = Depends(get_session_manager),
     session_id: str = Cookie(...),
     conference_id: int = Query(...),
-    review_form: ReviewForm = Depends(),
+    review_form: ReviewForm = Form(),
     db_conn: AsyncSession = Depends(get_postgres_async_conn),
 ):
     user_id = await session_manager.get_user_id(session_id)
@@ -53,7 +53,7 @@ async def create_review(
     return {"message": "review created"}
 
 
-@review_router.delete("/delete/{review_id}")  # type: ignore
+@review_router.delete("/{review_id}")  # type: ignore
 async def delete_review(
     review_id: int,
     session_manager: AsyncSessionManager = Depends(get_session_manager),

@@ -2,10 +2,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.future import select
 
-from fastapi import APIRouter, HTTPException, Depends, Cookie
+from fastapi import APIRouter, HTTPException, Depends, Cookie, Form
 from fastapi.responses import JSONResponse
 
-from yo.infrastructure import (
+from yo.application import (
     get_postgres_async_conn,
     UsersOrm,
     AdminsOrm,
@@ -20,7 +20,7 @@ auth_router = APIRouter()
 
 @auth_router.post("/login/user")  # type: ignore
 async def login(
-    form_data: UserForm = Depends(),
+    form_data: UserForm = Form(...),
     db_conn: AsyncSession = Depends(get_postgres_async_conn),
     session_manager: AsyncSessionManager = Depends(get_session_manager),
 ) -> JSONResponse:
@@ -51,7 +51,7 @@ async def login(
 
 @auth_router.post("/login/admin")  # type: ignore
 async def login(
-    form_data: UserForm = Depends(),
+    form_data: UserForm = Form(...),
     db_conn: AsyncSession = Depends(get_postgres_async_conn),
     session_manager: AsyncSessionManager = Depends(get_session_manager),
 ) -> JSONResponse:
@@ -80,7 +80,7 @@ async def login(
     return response
 
 
-@auth_router.get("/test-session") # type: ignore
+@auth_router.get("/test-session")  # type: ignore
 async def get_user_info(
     session_id: str = Cookie(...),
     db_conn: AsyncSession = Depends(get_postgres_async_conn),
@@ -103,7 +103,7 @@ async def get_user_info(
 
 @auth_router.post("/register/user")  # type: ignore
 async def register(
-    form_data: UserForm = Depends(),
+    form_data: UserForm = Form(...),
     db_conn: AsyncSession = Depends(get_postgres_async_conn),
 ) -> dict:
     new_user = UsersOrm(

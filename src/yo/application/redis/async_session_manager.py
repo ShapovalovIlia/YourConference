@@ -3,7 +3,7 @@ import redis.asyncio as aioredis  # type: ignore
 
 from fastapi import Depends
 
-from yo.infrastructure.db_connections import get_redis_async_conn
+from yo.application.redis.redis_conn import get_redis_async_conn
 
 
 class AsyncSessionManager:

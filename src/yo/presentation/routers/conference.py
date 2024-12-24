@@ -1,16 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.future import select
 
-from fastapi import APIRouter, HTTPException, Depends, Cookie, Query
+from fastapi import APIRouter, Depends, Query
 
-from yo.infrastructure import (
+from yo.application import (
     get_postgres_async_conn,
     ConferencesOrm,
-    AsyncSessionManager,
-    RegistrationsOrm,
-    AdminsOrm,
-    get_session_manager,
 )
 
 

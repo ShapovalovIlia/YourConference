@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from yo.infrastructure.postgres.config import async_postgres_config_from_env
+from yo.application.postgres.config import async_postgres_config_from_env
 
 
 _engine = create_async_engine(

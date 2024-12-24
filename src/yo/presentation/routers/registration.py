@@ -4,7 +4,7 @@ from sqlalchemy.future import select
 
 from fastapi import APIRouter, HTTPException, Depends, Cookie, Query
 
-from yo.infrastructure import (
+from yo.application import (
     get_postgres_async_conn,
     AsyncSessionManager,
     RegistrationsOrm,
@@ -16,7 +16,7 @@ from yo.infrastructure import (
 registration_router = APIRouter(prefix="/registrations")
 
 
-@registration_router.post("/register")  # type: ignore
+@registration_router.post("")  # type: ignore
 async def register(
     session_manager: AsyncSessionManager = Depends(get_session_manager),
     session_id: str = Cookie(...),
@@ -51,7 +51,7 @@ async def register(
     }
 
 
-@registration_router.delete("/register/{registration_id}")  # type: ignore
+@registration_router.delete("/{registration_id}")  # type: ignore
 async def delete_register(
     registration_id: int,
     session_manager: AsyncSessionManager = Depends(get_session_manager),
@@ -88,7 +88,7 @@ async def delete_register(
     return {"message": "Registration deleted successfully"}
 
 
-@registration_router.patch("/change-status/{registration_id}")  # type: ignore
+@registration_router.put("/{registration_id}/status")  # type: ignore #TODO айди админов и юзеров пересекаются
 async def change_register_status(
     registration_id: int,
     recommended: bool = Query(...),
