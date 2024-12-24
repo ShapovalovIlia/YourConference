@@ -7,8 +7,8 @@ from fastapi.responses import JSONResponse
 
 from yo.application import (
     get_postgres_async_conn,
-    UsersOrm,
-    AdminsOrm,
+    User,
+    Admin,
     AsyncSessionManager,
     get_session_manager,
 )
@@ -24,7 +24,7 @@ async def login(
     db_conn: AsyncSession = Depends(get_postgres_async_conn),
     session_manager: AsyncSessionManager = Depends(get_session_manager),
 ) -> JSONResponse:
-    query = select(UsersOrm).filter(UsersOrm.username == form_data.username)
+    query = select(User).filter(User.username == form_data.username)
     result = await db_conn.execute(query)
     user = result.scalar_one_or_none()
 
@@ -55,7 +55,7 @@ async def login(
     db_conn: AsyncSession = Depends(get_postgres_async_conn),
     session_manager: AsyncSessionManager = Depends(get_session_manager),
 ) -> JSONResponse:
-    query = select(AdminsOrm).where(AdminsOrm.username == form_data.username)
+    query = select(Admin).where(Admin.username == form_data.username)
     result = await db_conn.execute(query)
     admin = result.scalar_one_or_none()
 
@@ -93,7 +93,7 @@ async def get_user_info(
             status_code=401, detail="Session expired or invalid"
         )
 
-    user = await db_conn.get(UsersOrm, user_id)
+    user = await db_conn.get(User, user_id)
 
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
@@ -106,9 +106,7 @@ async def register(
     form_data: UserForm = Form(...),
     db_conn: AsyncSession = Depends(get_postgres_async_conn),
 ) -> dict:
-    new_user = UsersOrm(
-        username=form_data.username, password=form_data.password
-    )
+    new_user = User(username=form_data.username, password=form_data.password)
 
     try:
         db_conn.add(new_user)

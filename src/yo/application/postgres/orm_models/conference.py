@@ -6,7 +6,7 @@ from sqlalchemy.orm import mapped_column, Mapped
 from .base import Base
 
 
-class ConferencesOrm(Base):
+class Conference(Base):
     __tablename__ = "conferences"
 
     id: Mapped[int] = mapped_column(primary_key=True)

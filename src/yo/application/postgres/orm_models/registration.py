@@ -4,7 +4,7 @@ from sqlalchemy.orm import mapped_column, Mapped
 from .base import Base
 
 
-class RegistrationsOrm(Base):
+class Registration(Base):
     __tablename__ = "registrations"
 
     id: Mapped[int] = mapped_column(primary_key=True)

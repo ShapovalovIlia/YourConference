@@ -7,8 +7,8 @@ from fastapi import APIRouter, HTTPException, Depends, Cookie, Query
 from yo.application import (
     get_postgres_async_conn,
     AsyncSessionManager,
-    RegistrationsOrm,
-    AdminsOrm,
+    Registration,
+    Admin,
     get_session_manager,
 )
 
@@ -30,9 +30,7 @@ async def register(
             status_code=401, detail="Session expired or invalid"
         )
 
-    new_register = RegistrationsOrm(
-        user_id=user_id, conference_id=conference_id
-    )
+    new_register = Registration(user_id=user_id, conference_id=conference_id)
 
     try:
         db_conn.add(new_register)
@@ -65,9 +63,7 @@ async def delete_register(
             status_code=401, detail="Session expired or invalid"
         )
 
-    query = select(RegistrationsOrm).where(
-        RegistrationsOrm.id == registration_id
-    )
+    query = select(Registration).where(Registration.id == registration_id)
     result = await db_conn.execute(query)
     registration = result.scalar_one_or_none()
 
@@ -103,13 +99,13 @@ async def change_register_status(
             status_code=401, detail="Session expired or invalid"
         )
 
-    if await db_conn.get(AdminsOrm, admin_id) is None:
+    if await db_conn.get(Admin, admin_id) is None:
         raise HTTPException(
             status_code=403,
             detail="You don't have permission to change register status",
         )
 
-    registration = await db_conn.get(RegistrationsOrm, registration_id)
+    registration = await db_conn.get(Registration, registration_id)
     if not registration:
         raise HTTPException(status_code=404, detail="Registration not found")
 

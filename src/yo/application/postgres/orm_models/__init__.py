@@ -1,18 +1,18 @@
 __all__ = [
     "Base",
-    "UsersOrm",
-    "AdminsOrm",
-    "ConferencesOrm",
-    "PlacesOrm",
-    "RegistrationsOrm",
-    "ReviewsOrm",
+    "User",
+    "Admin",
+    "Conference",
+    "Place",
+    "Registration",
+    "Review",
 ]
 
 
 from .base import Base
-from .user import UsersOrm
-from .admin import AdminsOrm
-from .conference import ConferencesOrm
-from .place import PlacesOrm
-from .registration import RegistrationsOrm
-from .review import ReviewsOrm
+from .user import User
+from .admin import Admin
+from .conference import Conference
+from .place import Place
+from .registration import Registration
+from .review import Review

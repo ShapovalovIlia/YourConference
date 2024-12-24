@@ -3,7 +3,7 @@ from sqlalchemy.orm import mapped_column, Mapped
 from .base import Base
 
 
-class PlacesOrm(Base):
+class Place(Base):
     __tablename__ = "places"
 
     id: Mapped[int] = mapped_column(primary_key=True)

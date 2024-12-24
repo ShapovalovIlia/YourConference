@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Query
 
 from yo.application import (
     get_postgres_async_conn,
-    ConferencesOrm,
+    Conference,
 )
 
 
@@ -18,6 +18,6 @@ async def get_conferences_list(
     limit: int = Query(10, gt=0),
     db_conn: AsyncSession = Depends(get_postgres_async_conn),
 ):
-    query = select(ConferencesOrm).offset(skip).limit(limit)
+    query = select(Conference).offset(skip).limit(limit)
     conferences = await db_conn.execute(query)
     return conferences
