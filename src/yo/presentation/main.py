@@ -6,6 +6,7 @@ from yo.presentation.routers import (
     auth_router,
     conference_router,
     review_router,
+    registration_router,
 )
 
 
@@ -17,6 +18,7 @@ async def main() -> None:
     app.include_router(auth_router)
     app.include_router(conference_router)
     app.include_router(review_router)
+    app.include_router(registration_router)
 
     await server.serve()
 

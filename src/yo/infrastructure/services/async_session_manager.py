@@ -1,6 +1,10 @@
 from uuid import uuid4
 import redis.asyncio as aioredis  # type: ignore
 
+from fastapi import Depends
+
+from yo.infrastructure.db_connections import get_redis_async_conn
+
 
 class AsyncSessionManager:
     def __init__(self, *, redis: aioredis.Redis, session_expiry: int = 3600):
@@ -18,3 +22,9 @@ class AsyncSessionManager:
 
     async def delete_session(self, session_id: str) -> None:
         await self.redis.delete(session_id)
+
+
+def get_session_manager(
+    redis: aioredis.Redis = Depends(get_redis_async_conn),
+) -> AsyncSessionManager:
+    return AsyncSessionManager(redis=redis)

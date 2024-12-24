@@ -1,5 +1,3 @@
-import redis.asyncio as aioredis  # type: ignore
-
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.future import select
@@ -9,10 +7,10 @@ from fastapi.responses import JSONResponse
 
 from yo.infrastructure import (
     get_postgres_async_conn,
-    get_redis_async_conn,
     UsersOrm,
     AdminsOrm,
     AsyncSessionManager,
+    get_session_manager,
 )
 from yo.presentation.validation_models import UserForm
 
@@ -24,7 +22,7 @@ auth_router = APIRouter()
 async def login(
     form_data: UserForm = Depends(),
     db_conn: AsyncSession = Depends(get_postgres_async_conn),
-    redis: aioredis.Redis = Depends(get_redis_async_conn),
+    session_manager: AsyncSessionManager = Depends(get_session_manager),
 ) -> JSONResponse:
     query = select(UsersOrm).filter(UsersOrm.username == form_data.username)
     result = await db_conn.execute(query)
@@ -40,7 +38,6 @@ async def login(
             status_code=401, detail="Incorrect username or password"
         )
 
-    session_manager = AsyncSessionManager(redis=redis)
     session_id = await session_manager.create_session(user.id)
 
     response = JSONResponse(
@@ -56,9 +53,9 @@ async def login(
 async def login(
     form_data: UserForm = Depends(),
     db_conn: AsyncSession = Depends(get_postgres_async_conn),
-    redis: aioredis.Redis = Depends(get_redis_async_conn),
+    session_manager: AsyncSessionManager = Depends(get_session_manager),
 ) -> JSONResponse:
-    query = select(AdminsOrm).filter(AdminsOrm.username == form_data.username)
+    query = select(AdminsOrm).where(AdminsOrm.username == form_data.username)
     result = await db_conn.execute(query)
     admin = result.scalar_one_or_none()
 
@@ -72,7 +69,6 @@ async def login(
             status_code=401, detail="Incorrect username or password"
         )
 
-    session_manager = AsyncSessionManager(redis=redis)
     session_id = await session_manager.create_session(admin.id)
 
     response = JSONResponse(
@@ -84,13 +80,12 @@ async def login(
     return response
 
 
-@auth_router.get("/test-session")  # type: ignore
+@auth_router.get("/test-session") # type: ignore
 async def get_user_info(
     session_id: str = Cookie(...),
     db_conn: AsyncSession = Depends(get_postgres_async_conn),
-    redis: aioredis.Redis = Depends(get_redis_async_conn),
+    session_manager: AsyncSessionManager = Depends(get_session_manager),
 ) -> dict:
-    session_manager = AsyncSessionManager(redis=redis)
     user_id = await session_manager.get_user_id(session_id)
 
     if not user_id:
@@ -98,11 +93,7 @@ async def get_user_info(
             status_code=401, detail="Session expired or invalid"
         )
 
-    user_id = int(user_id)  # type: ignore
-
-    query = select(UsersOrm).filter(UsersOrm.id == user_id)
-    result = await db_conn.execute(query)
-    user = result.scalar_one_or_none()
+    user = await db_conn.get(UsersOrm, user_id)
 
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
