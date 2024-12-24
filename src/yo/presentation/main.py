@@ -11,7 +11,7 @@ from yo.presentation.routers import (
 
 
 async def main() -> None:
-    app = FastAPI(title="lab2")
+    app = FastAPI(title="science conferences")
 
     config = Config(app=app, host="127.0.0.1", port=8080, reload=True)
     server = Server(config=config)
