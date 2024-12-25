@@ -1,9 +1,7 @@
-from fastapi import APIRouter, HTTPException, Depends, Cookie, Query
+from fastapi import APIRouter, Depends, Cookie, Query
 
 from yo.application import (
     AsyncSessionManager,
-    Registration,
-    Admin,
     get_session_manager,
     CreateRegistrationProcessor,
     get_create_registrations_processor,
@@ -31,6 +29,7 @@ async def register(
         user_id=user_id,
         conference_id=conference_id,
     )
+
     return {
         "message": "Registration created successfully",
     }

@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from fastapi import APIRouter, HTTPException, Depends, Cookie, Form
+from fastapi import APIRouter, Depends, Cookie, Form
 from fastapi.responses import JSONResponse
 
 from yo.application import (
@@ -32,13 +32,11 @@ async def login(
         username=form_data.username, password=form_data.password
     )
 
-    response = (
-        JSONResponse(
-            content={
-                "message": "Login successful",
-                "username": form_data.username,
-            }
-        ),
+    response = JSONResponse(
+        content={
+            "message": "Login successful",
+            "username": form_data.username,
+        }
     )
 
     session_id = await session_manager.create_session(user_id)
@@ -58,13 +56,11 @@ async def login(
         username=form_data.username, password=form_data.password
     )
 
-    response = (
-        JSONResponse(
-            content={
-                "message": "Login successful",
-                "username": form_data.username,
-            }
-        ),
+    response = JSONResponse(
+        content={
+            "message": "Login successful",
+            "username": form_data.username,
+        }
     )
 
     session_id = await session_manager.create_session(admin_id)
