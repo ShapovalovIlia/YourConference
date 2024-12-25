@@ -1,8 +1,8 @@
-from abc import ABC, abstractmethod
+class ApplicationError(Exception):
+    def __init__(self, message: str, *args) -> None:
+        self._message = message
+        super().__init__(args)
 
-
-class ApplicationError(Exception, ABC):
     @property
-    @abstractmethod
-    def message(self) -> str:
-        raise NotImplementedError
+    def message(self):
+        return self._message

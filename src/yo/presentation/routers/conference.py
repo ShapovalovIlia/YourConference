@@ -1,11 +1,8 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
-
 from fastapi import APIRouter, Depends, Query
 
 from yo.application import (
-    get_postgres_async_conn,
-    Conference,
+    get_get_conferences_processor,
+    GetConferencesProcessor,
 )
 
 
@@ -16,8 +13,10 @@ conference_router = APIRouter(prefix="/conferences")
 async def get_conferences_list(
     skip: int = Query(0, ge=0),
     limit: int = Query(10, gt=0),
-    db_conn: AsyncSession = Depends(get_postgres_async_conn),
+    processor: GetConferencesProcessor = Depends(
+        get_get_conferences_processor
+    ),
 ):
-    query = select(Conference).offset(skip).limit(limit)
-    conferences = await db_conn.execute(query)
+    conferences = await processor.process(skip=skip, limit=limit)
+
     return conferences
