@@ -85,7 +85,7 @@ async def register(
     }
 
 
-@auth_router.get("/test-session")  # type: ignore
+@auth_router.get("/test-session") # type: ignore
 async def get_user_info(
     session_id: str = Cookie(...),
     db_conn: AsyncSession = Depends(get_postgres_async_conn),

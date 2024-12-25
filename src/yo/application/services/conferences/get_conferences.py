@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
@@ -15,10 +17,11 @@ class GetConferencesProcessor:
         *,
         skip: int,
         limit: int,
-    ) -> list[Conference]:
+    ) -> Sequence[Conference]:
         query = select(Conference).offset(skip).limit(limit)
-        conferences = await self._db_conn.execute(query)
-        return conferences
+        result = await self._db_conn.execute(query)
+        confernces = result.scalars().all()
+        return confernces
 
 
 def get_get_conferences_processor(

@@ -14,13 +14,12 @@ from yo.application import ApplicationError
 
 
 def application_error_handler(
-    request: Request, exc: ApplicationError
+    request: Request, exc: Exception
 ) -> JSONResponse:
-    return JSONResponse(status_code=400, content={"message": exc.message})
+    if isinstance(exc, ApplicationError):
+        return JSONResponse(status_code=400, content={"message": exc.message})
 
-
-def server_error_handler(request: Request, exc: Exception) -> JSONResponse:
-    return JSONResponse(status_code=500, content={"message": "server error"})
+    return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
 
 
 async def main() -> None:
@@ -30,7 +29,6 @@ async def main() -> None:
     server = Server(config=config)
 
     app.add_exception_handler(ApplicationError, application_error_handler)
-    app.add_exception_handler(Exception, server_error_handler)
 
     app.include_router(auth_router)
     app.include_router(conference_router)
