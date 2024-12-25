@@ -19,7 +19,9 @@ def application_error_handler(
     if isinstance(exc, ApplicationError):
         return JSONResponse(status_code=400, content={"message": exc.message})
 
-    return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
+    return JSONResponse(
+        status_code=500, content={"message": "Internal Server Error"}
+    )
 
 
 async def main() -> None:

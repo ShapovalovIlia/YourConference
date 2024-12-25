@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конференции</title>
+</head>
+<body>
+    <h1>Список конференций</h1>
+
+    <ul>
+    {% for conference in conferences %}
+        <li>{{ conference.name }} ({{ conference.date }})</li>
+    {% endfor %}
+    </ul>
+
+    <div>
+        <h3>Навигация:</h3>
+        <div>
+            {% if skip > 0 %}
+                <a href="?skip={{ skip - limit }}&limit={{ limit }}">Предыдущая страница</a>
+            {% else %}
+                <span>Предыдущая страница</span>
+            {% endif %}
+            &nbsp;|&nbsp;
+            <a href="?skip={{ skip + limit }}&limit={{ limit }}">Следующая страница</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,7 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from fastapi import APIRouter, Depends, Cookie, Form
+from fastapi import APIRouter, Depends, Cookie, Form, Request
 from fastapi.responses import JSONResponse
+from fastapi.templating import Jinja2Templates
 
 from yo.application import (
     get_postgres_async_conn,
@@ -19,7 +20,25 @@ from yo.application import (
 from yo.presentation.pydantic_forms import UserForm
 
 
+def _get_login_templates():
+    return Jinja2Templates(directory="presentation/templates/login")
+
+
+def _get_register_templates():
+    return Jinja2Templates(directory="presentation/templates/register")
+
+
 auth_router = APIRouter()
+
+
+@auth_router.get("/login/user") # type: ignore
+async def get_user_login(
+    request: Request,
+    login_templates: Jinja2Templates = Depends(_get_login_templates),
+):
+    return login_templates.TemplateResponse(
+        "user_login.html", {"request": request}
+    )
 
 
 @auth_router.post("/login/user")  # type: ignore
@@ -46,6 +65,16 @@ async def login(
     return response
 
 
+@auth_router.get("/login/admin")  # type: ignore
+async def get_login_form(
+    request: Request,
+    login_templates: Jinja2Templates = Depends(_get_login_templates),
+):
+    return login_templates.TemplateResponse(
+        "admin_login.html", {"request": request}
+    )
+
+
 @auth_router.post("/login/admin")  # type: ignore
 async def login(
     form_data: UserForm = Form(...),
@@ -70,6 +99,16 @@ async def login(
     return response
 
 
+@auth_router.get("/register/user") # type: ignore
+async def get_user_register(
+    request: Request,
+    register_templates: Jinja2Templates = Depends(_get_register_templates),
+):
+    return register_templates.TemplateResponse(
+        "user_register.html", {"request": request}
+    )
+
+
 @auth_router.post("/register/user")  # type: ignore
 async def register(
     form_data: UserForm = Form(...),
@@ -85,7 +124,7 @@ async def register(
     }
 
 
-@auth_router.get("/test-session") # type: ignore
+@auth_router.get("/test-session")  # type: ignore
 async def get_user_info(
     session_id: str = Cookie(...),
     db_conn: AsyncSession = Depends(get_postgres_async_conn),

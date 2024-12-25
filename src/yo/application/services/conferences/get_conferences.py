@@ -21,6 +21,7 @@ class GetConferencesProcessor:
         query = select(Conference).offset(skip).limit(limit)
         result = await self._db_conn.execute(query)
         confernces = result.scalars().all()
+
         return confernces
 
 
