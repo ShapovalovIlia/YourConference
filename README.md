@@ -2,6 +2,7 @@
 ## work in progress
 ## Установка
 - перед добавьте в переменные окружения
+  
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=1234
 POSTGRES_DB=YourConference
