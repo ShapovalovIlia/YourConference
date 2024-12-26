@@ -17,12 +17,12 @@ REDIS_HOST=
 
 REDIS_PORT=
 
-'''python
+```python
 python3 -m venv venv
 source venv/bin/activate
 pip install -e .
 poetry install
-'''
+```
 ## Стэк: FastAPI, Redis, Postgres, SQLAlchemy и несколько third party либ
 ### Явно стоит переделать:
 - разделения слоя бизнес логики и ее реализации
