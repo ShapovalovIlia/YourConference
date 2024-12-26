@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, Cookie, Query
 
 from yo.application import (
@@ -19,12 +21,12 @@ registration_router = APIRouter(prefix="/registrations")
 async def register(
     session_manager: AsyncSessionManager = Depends(get_session_manager),
     session_id: str = Cookie(...),
-    conference_id: int = Query(),
+    conference_id: UUID = Query(),
     processor: CreateRegistrationProcessor = Depends(
         get_create_registrations_processor
     ),
 ) -> dict:
-    user_id = await session_manager.get_user_id(session_id)
+    user_id = await session_manager.get_id(session_id)
     await processor.process(
         user_id=user_id,
         conference_id=conference_id,
@@ -37,14 +39,14 @@ async def register(
 
 @registration_router.delete("/{registration_id}")  # type: ignore
 async def delete_register(
-    registration_id: int,
+    registration_id: UUID,
     session_id: str = Cookie(...),
     session_manager: AsyncSessionManager = Depends(get_session_manager),
     processor: DeleteRegistrationProcessor = Depends(
         get_delete_registrations_processor
     ),
 ) -> dict:
-    user_id = await session_manager.get_user_id(session_id)
+    user_id = await session_manager.get_id(session_id)
     await processor.process(user_id=user_id, registration_id=registration_id)
 
     return {"message": "Registration deleted successfully"}
@@ -52,7 +54,7 @@ async def delete_register(
 
 @registration_router.put("/{registration_id}/status")  # type: ignore # TODO айди админов и юзеров пересекаются
 async def change_registration_status(
-    registration_id: int,
+    registration_id: UUID,
     recommended: bool = Query(...),
     session_manager: AsyncSessionManager = Depends(get_session_manager),
     session_id: str = Cookie(...),
@@ -60,7 +62,7 @@ async def change_registration_status(
         get_change_registration_status_processor
     ),
 ) -> dict:
-    admin_id = await session_manager.get_user_id(session_id)
+    admin_id = await session_manager.get_id(session_id)
 
     await processor.process(
         admin_id=admin_id,

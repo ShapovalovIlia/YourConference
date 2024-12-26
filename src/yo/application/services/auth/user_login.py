@@ -1,3 +1,4 @@
+from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -11,7 +12,7 @@ class UserLoginProcessor:
     def __init__(self, db_conn: AsyncSession) -> None:
         self._db_conn = db_conn
 
-    async def process(self, *, username: str, password: str) -> int:
+    async def process(self, *, username: str, password: str) -> UUID:
         query = select(User).where(User.username == username)
         result = await self._db_conn.execute(query)
         user = result.scalar_one_or_none()

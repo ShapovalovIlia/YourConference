@@ -16,6 +16,7 @@ from yo.application import (
     get_create_user_processor,
     User,
     UserNotFoundError,
+    UserType,
 )
 from yo.presentation.pydantic_forms import UserForm
 
@@ -31,7 +32,7 @@ def _get_register_templates():
 auth_router = APIRouter()
 
 
-@auth_router.get("/login/user") # type: ignore
+@auth_router.get("/login/user")  # type: ignore
 async def get_user_login(
     request: Request,
     login_templates: Jinja2Templates = Depends(_get_login_templates),
@@ -92,14 +93,14 @@ async def login(
         }
     )
 
-    session_id = await session_manager.create_session(admin_id)
+    session_id = await session_manager.create_session(admin_id, UserType.ADMIN)
 
     response.set_cookie("session_id", session_id)
 
     return response
 
 
-@auth_router.get("/register/user") # type: ignore
+@auth_router.get("/register/user")  # type: ignore
 async def get_user_register(
     request: Request,
     register_templates: Jinja2Templates = Depends(_get_register_templates),
@@ -124,13 +125,16 @@ async def register(
     }
 
 
-@auth_router.get("/test-session")  # type: ignore
+@auth_router.get("/get-user-sessionid")  # type: ignore
 async def get_user_info(
     session_id: str = Cookie(...),
     db_conn: AsyncSession = Depends(get_postgres_async_conn),
     session_manager: AsyncSessionManager = Depends(get_session_manager),
 ) -> dict:
-    user_id = await session_manager.get_user_id(session_id)
+    """
+    штука для отладки
+    """
+    user_id = await session_manager.get_id(session_id)
 
     user = await db_conn.get(User, user_id)
 

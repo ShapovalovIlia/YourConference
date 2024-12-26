@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -11,7 +13,7 @@ class AdminLoginProcessor:
     def __init__(self, db_conn: AsyncSession) -> None:
         self._db_conn = db_conn
 
-    async def process(self, *, username: str, password: str) -> int:
+    async def process(self, *, username: str, password: str) -> UUID:
         query = select(Admin).where(Admin.username == username)
         result = await self._db_conn.execute(query)
         admin = result.scalar_one_or_none()

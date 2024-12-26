@@ -1,4 +1,4 @@
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from fastapi import Depends
@@ -12,16 +12,20 @@ class CreateUserProcessor:
         self._db_conn = db_conn
 
     async def process(self, *, username: str, password: str) -> None:
-        new_user = User(username=username, password=password)
-
-        try:
-            self._db_conn.add(new_user)
-            await self._db_conn.commit()
-
-        except IntegrityError:
+        if await self._check_user_exists(username):
             raise UserAlreadyExistsError(
                 message="User with such username already exists"
             )
+
+        new_user = User(username=username, password=password)
+        self._db_conn.add(new_user)
+        await self._db_conn.commit()
+
+    async def _check_user_exists(self, username: str) -> bool:
+        query = select(User).where(User.username == username)
+        check = await self._db_conn.execute(query)
+
+        return len(check.all()) > 0
 
 
 def get_create_user_processor(

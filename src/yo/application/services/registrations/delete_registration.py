@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,7 +13,7 @@ class DeleteRegistrationProcessor:
     def __init__(self, db_conn: AsyncSession) -> None:
         self._db_conn = db_conn
 
-    async def process(self, *, user_id: int, registration_id: int) -> None:
+    async def process(self, *, user_id: UUID, registration_id: UUID) -> None:
         query = select(Registration).where(Registration.id == registration_id)
         result = await self._db_conn.execute(query)
         registration = result.scalar_one_or_none()

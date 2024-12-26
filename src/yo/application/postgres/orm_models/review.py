@@ -1,17 +1,21 @@
-from .base import Base
+from uuid import UUID
 
-from sqlalchemy import ForeignKey, UniqueConstraint
+from sqlalchemy import ForeignKey, UniqueConstraint, text
 from sqlalchemy.orm import mapped_column, Mapped
+
+from .base import Base
 
 
 class Review(Base):
     __tablename__ = "reviews"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    conference_id: Mapped[int] = mapped_column(
+    id: Mapped[UUID] = mapped_column(
+        primary_key=True, server_default=text("uuid_generate_v4()")
+    )
+    conference_id: Mapped[UUID] = mapped_column(
         ForeignKey("conferences.id", ondelete="CASCADE")
     )
-    user_id: Mapped[int] = mapped_column(
+    user_id: Mapped[UUID] = mapped_column(
         ForeignKey("users.id", ondelete="CASCADE")
     )
     rating: Mapped[int] = mapped_column(nullable=False)

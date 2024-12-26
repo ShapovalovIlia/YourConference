@@ -1,4 +1,5 @@
-from sqlalchemy.exc import IntegrityError
+from uuid import UUID
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from fastapi import Depends
@@ -20,7 +21,7 @@ class ChangeRegistrationStatusProcessor:
         self._db_conn = db_conn
 
     async def process(
-        self, *, admin_id: int, registration_id: int, recommended: bool
+        self, *, admin_id: UUID, registration_id: UUID, recommended: bool
     ) -> None:
         if not admin_id:
             raise UknownSessionIdError(message="Session expired or invalid")

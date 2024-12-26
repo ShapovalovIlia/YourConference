@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, Cookie, Query, Form
 
 from yo.application import (
@@ -17,12 +19,12 @@ review_router = APIRouter(prefix="/reviews")
 @review_router.post("")  # type: ignore
 async def create_review(
     session_id: str = Cookie(...),
-    conference_id: int = Query(...),
+    conference_id: UUID = Query(...),
     review_form: ReviewForm = Form(),
     session_manager: AsyncSessionManager = Depends(get_session_manager),
     processor: CreateReviewProcessor = Depends(get_create_review_processor),
 ):
-    user_id = await session_manager.get_user_id(session_id)
+    user_id = await session_manager.get_id(session_id)
 
     await processor.process(
         conference_id=conference_id,
@@ -36,12 +38,12 @@ async def create_review(
 
 @review_router.delete("/{review_id}")  # type: ignore
 async def delete_review(
-    review_id: int,
+    review_id: UUID,
     session_id: str = Cookie(...),
     session_manager: AsyncSessionManager = Depends(get_session_manager),
     proccessor: DeleteReviewProcessor = Depends(get_delete_review_processor),
 ) -> dict:
-    user_id = await session_manager.get_user_id(session_id)
+    user_id = await session_manager.get_id(session_id)
 
     await proccessor.process(review_id=review_id, user_id=user_id)
 

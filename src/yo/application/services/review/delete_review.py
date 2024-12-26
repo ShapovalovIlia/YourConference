@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends
 
@@ -11,7 +13,7 @@ class DeleteReviewProcessor:
     def __init__(self, db_conn: AsyncSession) -> None:
         self._db_conn = db_conn
 
-    async def process(self, *, review_id: int, user_id: int) -> None:
+    async def process(self, *, review_id: UUID, user_id: UUID) -> None:
         review = await self._db_conn.get(Review, review_id)
 
         if not review:

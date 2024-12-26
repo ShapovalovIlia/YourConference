@@ -1,10 +1,11 @@
+from uuid import UUID
+
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import IntegrityError
 from fastapi import Depends
 
 from yo.application.exceptions import ReviewAlreadyExistsError
 from yo.application.postgres.orm_models import Review
-
 from yo.application.postgres import get_postgres_async_conn
 
 
@@ -13,8 +14,15 @@ class CreateReviewProcessor:
         self._db_conn = db_conn
 
     async def process(
-        self, *, conference_id: int, user_id: int, rating: int, text: str
+        self, *, conference_id: UUID, user_id: UUID, rating: int, text: str
     ) -> None:
+        if await self._check_review_exists(
+            user_id=user_id, conference_id=conference_id
+        ):
+            raise ReviewAlreadyExistsError(
+                message="The user has already left a review for this conference.",
+            )
+
         review = Review(
             conference_id=conference_id,
             user_id=user_id,
@@ -22,16 +30,18 @@ class CreateReviewProcessor:
             text=text,
         )
 
-        try:
-            self._db_conn.add(review)
-            await self._db_conn.commit()
+        self._db_conn.add(review)
+        await self._db_conn.commit()
 
-        except IntegrityError:  # TODO: более узко ловить ошибку
-            raise ReviewAlreadyExistsError(
-                message="The user has already left a review for this conference.",
-            )
+    async def _check_review_exists(
+        self, user_id: UUID, conference_id: UUID
+    ) -> bool:
+        query = select(Review).where(
+            Review.user_id == user_id, Review.conference_id == conference_id
+        )
+        check = await self._db_conn.execute(query)
 
-        return None
+        return len(check.all()) > 0
 
 
 def get_create_review_processor(

@@ -8,6 +8,7 @@ from yo.presentation.routers import (
     conference_router,
     review_router,
     registration_router,
+    start_router,
 )
 
 from yo.application import ApplicationError
@@ -36,6 +37,7 @@ async def main() -> None:
     app.include_router(conference_router)
     app.include_router(review_router)
     app.include_router(registration_router)
+    app.include_router(start_router)
 
     await server.serve()
 
