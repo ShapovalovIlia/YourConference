@@ -26,7 +26,7 @@ def application_error_handler(
 
 
 async def main() -> None:
-    app = FastAPI(title="science conferences")
+    app = FastAPI(title="YourConference")
 
     config = Config(app=app, host="127.0.0.1", port=8080)
     server = Server(config=config)
