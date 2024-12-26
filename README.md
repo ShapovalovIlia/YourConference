@@ -1,6 +1,7 @@
 # Сервис для регистрации на научные конференции
 ## work in progress
 ## Установка
+запускать main.py из директории yo
 - перед добавьте в переменные окружения
   
 POSTGRES_USER=
@@ -22,6 +23,7 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -e .
 poetry install
+docker-compose up
 ```
 ## Стэк: FastAPI, Redis, Postgres, SQLAlchemy и несколько third party либ
 ### Явно стоит переделать:
