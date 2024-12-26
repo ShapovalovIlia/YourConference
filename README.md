@@ -3,13 +3,19 @@
 ## Установка
 - перед добавьте в переменные окружения
   
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=1234
-POSTGRES_DB=YourConference
-POSTGRES_HOST=127.0.0.1
-POSTGRES_PORT=5432
-REDIS_HOST=127.0.0.1
-REDIS_PORT=6379
+POSTGRES_USER=
+
+POSTGRES_PASSWORD=
+
+POSTGRES_DB=
+
+POSTGRES_HOST=
+
+POSTGRES_PORT=
+
+REDIS_HOST=
+
+REDIS_PORT=
 
 '''python
 python3 -m venv venv
