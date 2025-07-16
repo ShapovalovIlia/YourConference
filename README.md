@@ -31,5 +31,5 @@ alembic upgrade head
 - запуск
 запустить файл src/yo/presentation/main.py из директории src/yo/
 
-## Стэк: FastAPI, Redis, Postgres, SQLAlchemy +third party libs
+## Стэк: FastAPI, Redis, Postgres, SQLAlchemy + third party libs
 
