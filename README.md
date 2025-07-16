@@ -31,12 +31,5 @@ alembic upgrade head
 - запуск
 запустить файл src/yo/presentation/main.py из директории src/yo/
 
-## Стэк: FastAPI, Redis, Postgres, SQLAlchemy и несколько third party либ
-### Явно стоит переделать:
-- разделения слоя бизнес логики и ее реализации
-- добавить кастомные статус коды и их описание
+## Стэк: FastAPI, Redis, Postgres, SQLAlchemy +third party libs
 
-### Немножко мыслей:
-- использование ORM ломает слои абстракции, но увеличивает скорость разработки
-- у FastAPI неудобный DI, в следующий раз попробую Dishka
-- SQLAlchemy гуамно)
